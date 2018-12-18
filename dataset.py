@@ -65,3 +65,10 @@ class BaseDataset:
     @property
     def test(self):
         return self._test
+
+    @classmethod
+    def from_subsets(cls, train, test):
+        instance = cls.__new__()
+        instance._train = train
+        instance._test = test
+        return instance
