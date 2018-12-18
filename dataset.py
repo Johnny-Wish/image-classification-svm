@@ -116,5 +116,5 @@ class ImageDataset(BaseDataset):
         test0 = ImageDataset.get_2d_array(test0)
         test1 = ImageDataset.get_2d_array(test1)
         X_test = np.concatenate([test0, test1])
-        y_test = np.concatenate([np.zeros(len(test0)), np.zeros(len(test1))])
+        y_test = np.concatenate([np.zeros(len(test0)), np.ones(len(test1))])
         self._test = Subset(X_test, y_test)
