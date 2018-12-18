@@ -32,6 +32,11 @@ class Subset:
 
         assert len(self._X) == len(self._y), "X and y differ in length {} != {}".format(len(self._X), len(self._y))
 
+    def shuffle(self):
+        p = np.random.permutation(len(self._X))
+        self._X = self._X[p]
+        self._y = self._y[p]
+
     @property
     def X(self):
         return self._X
