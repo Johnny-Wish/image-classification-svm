@@ -79,6 +79,16 @@ class BaseDataset:
         instance._test = test
         return instance
 
+    def shuffle_train(self):
+        self._train.shuffle()
+
+    def shuffle_test(self):
+        self._test.shuffle()
+
+    def shuffle(self):
+        self.shuffle_train()
+        self.shuffle_test()
+
 
 class ImageDataset(BaseDataset):
     @staticmethod
