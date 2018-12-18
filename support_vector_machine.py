@@ -6,6 +6,6 @@ param_dist = {
     "C": uniform(0.5, 2),
     "kernel": ["rbf"],
     "shrinking": [True, False],
-    "class_weights": [None, "balanced"],
+    "class_weight": [None, "balanced"],
     "random_state": [0],
 }

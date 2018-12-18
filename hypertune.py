@@ -8,6 +8,7 @@ from sklearn.model_selection._search import BaseSearchCV
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from support_vector_machine import svc, param_dist
 from dataset import ImageDataset
+from image_loader import ImageLoader
 
 
 def print_cv_result(result, n=-1):
@@ -31,15 +32,20 @@ if __name__ == '__main__':
     parser.add_argument("--test0", required=True, help="folder of negative samples for testing")
     parser.add_argument("--train1", required=True, help="folder of positive samples for training")
     parser.add_argument("--test1", required=True, help="folder of positive samples for testing")
-    parser.add_argument("--outf", default="output/", help=)
+    parser.add_argument("--outf", default="output/", help="folder to store search results")
     parser.add_argument("--n_iter", default=20, type=int, help="number of search iterations")
     parser.add_argument("--cv", default=3, type=int, help="number of folds for cross validation")
     parser.add_argument("--n_jobs", default=-1, type=int, help="number of CPU workers")
     opt = parser.parse_args()
 
-    dataset = ImageDataset(opt.train0, opt.test0, opt.train1, opt.test1k)
+    width, height = 64, 64
+    train0 = ImageLoader(opt.train0, width, height)
+    test0 = ImageLoader(opt.test0, width, height)
+    train1 = ImageLoader(opt.train1, width, height)
+    test1 = ImageLoader(opt.test1, width, height)
+    dataset = ImageDataset(train0, test0, train1, test1)
     searcher = RandomizedSearchCV(svc, param_dist, n_iter=opt.n_iter, cv=opt.cv, n_jobs=opt.n_jobs,
-                                  verbose=2, random_state=0, return_train_score=True)
+                                  verbose=3, random_state=0, return_train_score=True)
     print("starting hypertuning")
     searcher.fit(dataset.train.X, dataset.train.y)
 
@@ -62,8 +68,8 @@ if __name__ == '__main__':
 
     print("dumping search results")
     with open(os.path.join(opt.outf, "search_results.pkl"), "wb") as f:
-        pkl.dump(pd.DataFrame(searcher.cv_results_))
+        pkl.dump(pd.DataFrame(searcher.cv_results_), f)
 
     print("dumping best model")
     with open(os.path.join(opt.outf, "model.pkl"), "wb") as f:
-        pkl.dump(pd.DataFrame(searcher.best_estimator_))
+        pkl.dump(searcher.best_estimator_, f)
