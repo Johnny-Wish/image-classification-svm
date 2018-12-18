@@ -54,6 +54,12 @@ if __name__ == '__main__':
         accuracy_score(y_true, y_pred), *precision_recall_fscore_support(y_true, y_pred)
     ))
 
+    try:
+        os.makedirs(opt.outf)
+    except FileExistsError as e:
+        print(e)
+        print("abort making directories")
+
     print("dumping search results")
     with open(os.path.join(opt.outf, "search_results.pkl"), "wb") as f:
         pkl.dump(pd.DataFrame(searcher.cv_results_))
