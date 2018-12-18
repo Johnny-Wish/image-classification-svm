@@ -68,8 +68,8 @@ if __name__ == '__main__':
 
     print("dumping search results")
     with open(os.path.join(opt.outf, "search_results.pkl"), "wb") as f:
-        pkl.dump(pd.DataFrame(searcher.cv_results_))
+        pkl.dump(pd.DataFrame(searcher.cv_results_), f)
 
     print("dumping best model")
     with open(os.path.join(opt.outf, "model.pkl"), "wb") as f:
-        pkl.dump(pd.DataFrame(searcher.best_estimator_))
+        pkl.dump(searcher.best_estimator_, f)
