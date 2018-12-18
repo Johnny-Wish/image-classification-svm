@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
+from image_loader import ImageLoader
 
 
 class Subset:
@@ -72,3 +73,33 @@ class BaseDataset:
         instance._train = train
         instance._test = test
         return instance
+
+
+class ImageDataset(BaseDataset):
+    @staticmethod
+    def get_2d_array(img):
+        if isinstance(img, np.ndarray):
+            if len(img.shape) == 1:
+                return np.stack([img])  # treat the input as a single data point
+            elif len(img.shape) == 2:
+                return img  # treat the input as a n_sample x n_dimensional matrix
+            elif len(img.shape) >= 3:
+                return img.reshape([img.shape[0], -1])  # treat as an n_sample x width x height (x channel) tensor
+
+        elif isinstance(img, ImageLoader):
+            return img.image_matrix
+
+    def __init__(self, train0, test0, train1, test1):
+        super(ImageDataset, self).__init__()
+
+        train0 = ImageDataset.get_2d_array(train0)
+        train1 = ImageDataset.get_2d_array(train1)
+        X_train = np.concatenate(train0, train1)
+        y_train = np.concatenate([np.zeros(len(train0)), np.ones(len(train1))])
+        self._X = Subset(X_train, y_train)
+
+        test0 = ImageDataset.get_2d_array(test0)
+        test1 = ImageDataset.get_2d_array(test1)
+        X_test = np.concatenate(test0, test1)
+        y_test = np.concatenate([np.zeros(len(test0)), np.zeros(len(test1))])
+        self._y = Subset(X_test, y_test)
