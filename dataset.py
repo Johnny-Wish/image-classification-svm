@@ -109,12 +109,12 @@ class ImageDataset(BaseDataset):
 
         train0 = ImageDataset.get_2d_array(train0)
         train1 = ImageDataset.get_2d_array(train1)
-        X_train = np.concatenate(train0, train1)
+        X_train = np.concatenate([train0, train1])
         y_train = np.concatenate([np.zeros(len(train0)), np.ones(len(train1))])
-        self._X = Subset(X_train, y_train)
+        self._train = Subset(X_train, y_train)
 
         test0 = ImageDataset.get_2d_array(test0)
         test1 = ImageDataset.get_2d_array(test1)
-        X_test = np.concatenate(test0, test1)
+        X_test = np.concatenate([test0, test1])
         y_test = np.concatenate([np.zeros(len(test0)), np.zeros(len(test1))])
-        self._y = Subset(X_test, y_test)
+        self._test = Subset(X_test, y_test)
